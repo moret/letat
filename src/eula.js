@@ -1,12 +1,6 @@
 import React from 'react';
 
 class EULA extends React.Component {
-  static contextTypes = {
-    eulaOk: React.PropTypes.bool,
-    spamOk: React.PropTypes.bool,
-    liveEarth: React.PropTypes.bool
-  }
-
   render() {
     return (
       <div>
@@ -18,14 +12,14 @@ class EULA extends React.Component {
         </p>
         I agree with the conditions:
         <input
-            checked={this.context.agreedOk}
-            disabled={!this.context.liveEarth}
+            checked={this.props.agreedOk}
+            disabled={!this.props.liveEarth}
             type='checkbox'
             onChange={this.ack}/>
         Send me spam:
         <input
-            checked={this.context.spamOk}
-            disabled={!this.context.liveEarth}
+            checked={this.props.spamOk}
+            disabled={!this.props.liveEarth}
             type='checkbox'
             onChange={this.spam}/>
       </div>
@@ -36,20 +30,14 @@ class EULA extends React.Component {
     if (e) {
       e.currentTarget.blur();
     }
-
-    if (this.context.liveEarth) {
-      this.props.onAgreed();
-    }
+    this.props.onAgreed();
   }
 
   spam = (e) => {
     if (e) {
       e.currentTarget.blur();
     }
-
-    if (this.context.liveEarth) {
-      this.props.onSpam();
-    }
+    this.props.onSpam();
   }
 }
 

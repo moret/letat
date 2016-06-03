@@ -1,40 +1,39 @@
 import React from 'react';
 
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { storeActions } from './store';
+
 import EULA from './eula';
 import Boom from './boom';
 import Spam from './spam';
 import LiveEarth from './live-earth';
 import DeadEarth from './dead-earth';
 
+@connect(
+  reduxState => ({
+    eulaOk: reduxState.eulaOk,
+    spamOk: reduxState.spamOk,
+    liveEarth: reduxState.liveEarth
+  }),
+  dispatch => ({
+    onEULAOk: bindActionCreators(storeActions.eulaOk, dispatch),
+    onSpamOk: bindActionCreators(storeActions.spamOk, dispatch),
+    onDoom: bindActionCreators(storeActions.doom, dispatch)
+  })
+)
 class Doomsday extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      eulaOk: false,
-      spamOk: true,
-      liveEarth: true
-    };
-  }
-
-  static childContextTypes = {
-    eulaOk: React.PropTypes.bool,
-    spamOk: React.PropTypes.bool,
-    liveEarth: React.PropTypes.bool
-  }
-
-  getChildContext() {
-    return this.state;
-  }
-
   render() {
-    const ready = this.state.eulaOk && this.state.liveEarth;
-
+    const ready = this.props.eulaOk && this.props.liveEarth;
     return (
       <div>
         <EULA
-            onAgreed={this.eulaOk}
-            onSpam={this.spamOk}/>
-        <Boom ready={ready} onDoom={this.doom}/>
+            eulaOk={this.props.eulaOk}
+            spamOk={this.props.spamOk}
+            liveEarth={this.props.liveEarth}
+            onAgreed={this.props.onEULAOk}
+            onSpam={this.props.onSpamOk}/>
+        <Boom ready={ready} onDoom={this.props.onDoom}/>
         {this.renderEarth()}
         {this.renderSpam()}
       </div>
@@ -42,7 +41,7 @@ class Doomsday extends React.Component {
   }
 
   renderEarth = () => {
-    if (this.state.liveEarth) {
+    if (this.props.liveEarth) {
       return <LiveEarth />;
     } else {
       return <DeadEarth/>;
@@ -50,22 +49,8 @@ class Doomsday extends React.Component {
   }
 
   renderSpam = () => {
-    if (!this.state.liveEarth && this.state.spamOk) {
+    if (!this.props.liveEarth && this.props.spamOk) {
       return <Spam />;
-    }
-  }
-
-  eulaOk = () => {
-    this.setState({eulaOk: !this.state.eulaOk});
-  }
-
-  spamOk = () => {
-    this.setState({spamOk: !this.state.spamOk});
-  }
-
-  doom = () => {
-    if (this.state.eulaOk) {
-      this.setState({liveEarth: false});
     }
   }
 }
