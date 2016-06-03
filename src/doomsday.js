@@ -2,6 +2,7 @@ import React from 'react';
 
 import EULA from './eula';
 import Boom from './boom';
+import Spam from './spam';
 import LiveEarth from './live-earth';
 import DeadEarth from './dead-earth';
 
@@ -10,6 +11,7 @@ class Doomsday extends React.Component {
     super(props);
     this.state = {
       eulaOk: false,
+      spamOk: true,
       liveEarth: true
     };
   }
@@ -19,9 +21,13 @@ class Doomsday extends React.Component {
 
     return (
       <div>
-        <EULA onAgreed={this.eulaOk} tooLate={!this.state.liveEarth}/>
+        <EULA
+            onAgreed={this.eulaOk}
+            onSpam={this.spamOk}
+            tooLate={!this.state.liveEarth}/>
         <Boom ready={ready} onDoom={this.doom}/>
         {this.renderEarth()}
+        {this.renderSpam()}
       </div>
     );
   }
@@ -34,8 +40,18 @@ class Doomsday extends React.Component {
     }
   }
 
-  eulaOk = (acknowledged) => {
-    this.setState({eulaOk: acknowledged});
+  renderSpam = () => {
+    if (!this.state.liveEarth && this.state.spamOk) {
+      return <Spam />;
+    }
+  }
+
+  eulaOk = (ok) => {
+    this.setState({eulaOk: ok});
+  }
+
+  spamOk = (ok) => {
+    this.setState({spamOk: ok});
   }
 
   doom = () => {

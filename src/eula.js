@@ -4,7 +4,8 @@ class EULA extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      agreed: false
+      agreed: false,
+      spam: true
     };
   }
 
@@ -23,6 +24,12 @@ class EULA extends React.Component {
             disabled={this.props.tooLate}
             type='checkbox'
             onChange={this.ack}/>
+        Send me spam:
+        <input
+            checked={this.state.spam}
+            disabled={this.props.tooLate}
+            type='checkbox'
+            onChange={this.spam}/>
       </div>
     );
   }
@@ -36,7 +43,17 @@ class EULA extends React.Component {
       this.props.onAgreed(!this.state.agreed);
       this.setState({agreed: !this.state.agreed});
     }
+  }
 
+  spam = (e) => {
+    if (e) {
+      e.currentTarget.blur();
+    }
+
+    if (!this.props.tooLate) {
+      this.props.onSpam(!this.state.spam);
+      this.setState({spam: !this.state.spam});
+    }
   }
 }
 
