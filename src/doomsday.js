@@ -9,11 +9,14 @@ class Doomsday extends React.Component {
     super(props);
     this.state = {
       eulaOk: false,
-      earth: <LiveEarth/>
+      liveEarth: true
     };
   }
 
   render() {
+    const eulaEnabled = this.state.liveEarth;
+    const ready = this.state.eulaOk && this.state.liveEarth;
+
     return (
       <div>
         <h1>Bye, world!</h1>
@@ -23,11 +26,23 @@ class Doomsday extends React.Component {
           profits resulting from the activation of this device.
         </p>
         I agree with the conditions:
-        <input ref='eula' type='checkbox' onClick={this.ack}/>
-        <Boom ready={this.state.eulaOk} onDoom={this.doom}/>
-        {this.state.earth}
+        <input
+            checked={this.state.eulaOk}
+            disabled={!eulaEnabled}
+            type='checkbox'
+            onChange={this.ack}/>
+        <Boom ready={ready} onDoom={this.doom}/>
+        {this.renderEarth()}
       </div>
     );
+  }
+
+  renderEarth = () => {
+    if (this.state.liveEarth) {
+      return <LiveEarth />;
+    } else {
+      return <DeadEarth/>;
+    }
   }
 
   ack = (e) => {
@@ -35,12 +50,14 @@ class Doomsday extends React.Component {
       e.currentTarget.blur();
     }
 
-    this.setState({eulaOk: !this.state.eulaOk});
+    if (this.state.liveEarth) {    
+      this.setState({eulaOk: !this.state.eulaOk});
+    }
   }
 
   doom = () => {
-    if (this.refs.eula.checked) {
-      this.setState({earth: <DeadEarth/>});
+    if (this.state.eulaOk) {
+      this.setState({liveEarth: false});
     }
   }
 }
