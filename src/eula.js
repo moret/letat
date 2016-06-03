@@ -1,12 +1,10 @@
 import React from 'react';
 
 class EULA extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      agreed: false,
-      spam: true
-    };
+  static contextTypes = {
+    eulaOk: React.PropTypes.bool,
+    spamOk: React.PropTypes.bool,
+    liveEarth: React.PropTypes.bool
   }
 
   render() {
@@ -20,14 +18,14 @@ class EULA extends React.Component {
         </p>
         I agree with the conditions:
         <input
-            checked={this.state.agreed}
-            disabled={this.props.tooLate}
+            checked={this.context.agreedOk}
+            disabled={!this.context.liveEarth}
             type='checkbox'
             onChange={this.ack}/>
         Send me spam:
         <input
-            checked={this.state.spam}
-            disabled={this.props.tooLate}
+            checked={this.context.spamOk}
+            disabled={!this.context.liveEarth}
             type='checkbox'
             onChange={this.spam}/>
       </div>
@@ -39,9 +37,8 @@ class EULA extends React.Component {
       e.currentTarget.blur();
     }
 
-    if (!this.props.tooLate) {
-      this.props.onAgreed(!this.state.agreed);
-      this.setState({agreed: !this.state.agreed});
+    if (this.context.liveEarth) {
+      this.props.onAgreed();
     }
   }
 
@@ -50,9 +47,8 @@ class EULA extends React.Component {
       e.currentTarget.blur();
     }
 
-    if (!this.props.tooLate) {
-      this.props.onSpam(!this.state.spam);
-      this.setState({spam: !this.state.spam});
+    if (this.context.liveEarth) {
+      this.props.onSpam();
     }
   }
 }

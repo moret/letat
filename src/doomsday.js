@@ -16,6 +16,16 @@ class Doomsday extends React.Component {
     };
   }
 
+  static childContextTypes = {
+    eulaOk: React.PropTypes.bool,
+    spamOk: React.PropTypes.bool,
+    liveEarth: React.PropTypes.bool
+  }
+
+  getChildContext() {
+    return this.state;
+  }
+
   render() {
     const ready = this.state.eulaOk && this.state.liveEarth;
 
@@ -23,8 +33,7 @@ class Doomsday extends React.Component {
       <div>
         <EULA
             onAgreed={this.eulaOk}
-            onSpam={this.spamOk}
-            tooLate={!this.state.liveEarth}/>
+            onSpam={this.spamOk}/>
         <Boom ready={ready} onDoom={this.doom}/>
         {this.renderEarth()}
         {this.renderSpam()}
@@ -46,12 +55,12 @@ class Doomsday extends React.Component {
     }
   }
 
-  eulaOk = (ok) => {
-    this.setState({eulaOk: ok});
+  eulaOk = () => {
+    this.setState({eulaOk: !this.state.eulaOk});
   }
 
-  spamOk = (ok) => {
-    this.setState({spamOk: ok});
+  spamOk = () => {
+    this.setState({spamOk: !this.state.spamOk});
   }
 
   doom = () => {
